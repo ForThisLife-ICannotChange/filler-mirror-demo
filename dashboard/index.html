@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clinic Dashboard — Filler Mirror</title>
+  <meta name="description" content="Offline dashboard for clinic owners/managers to aggregate Filler Mirror consultation exports from multiple iPads." />
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="dash-header">
+    <div class="container dash-header-inner">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3" y="12" width="4" height="9" rx="1" fill="currentColor" />
+          <rect x="10" y="7" width="4" height="14" rx="1" fill="currentColor" />
+          <rect x="17" y="3" width="4" height="18" rx="1" fill="currentColor" />
+        </svg>
+        <span class="brand-name">Clinic Dashboard</span>
+      </div>
+      <p class="dash-subtitle">Aggregate consultation exports from every iPad — offline, in one view.</p>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <!-- ================= Import ================= -->
+    <section class="card" aria-labelledby="import-heading">
+      <h2 id="import-heading">Session exports</h2>
+      <p class="muted-text">
+        Drop one or more session-export JSON files from any number of iPads
+        (Staff panel → Sessions → Export JSON on each device). Files are
+        merged and deduped by session id, so it's safe to drop the same file
+        twice or re-drop overlapping exports.
+      </p>
+
+      <div id="dropzone-sessions" class="dropzone" role="button" tabindex="0"
+           aria-label="Drop session export JSON files here, or press Enter to choose files">
+        <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3v12m0 0-4-4m4 4 4-4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <p class="dropzone-title">Drop session JSON files here</p>
+        <p class="muted-text small">or click / press Enter to choose files — multiple files allowed</p>
+      </div>
+      <input type="file" id="file-input-sessions" accept="application/json,.json" multiple hidden />
+
+      <div class="import-row">
+        <p id="import-summary" class="import-summary" role="status" aria-live="polite"></p>
+        <div class="import-actions">
+          <button type="button" id="btn-export-merged" class="btn btn-secondary" disabled>
+            Export merged sessions JSON
+          </button>
+          <button type="button" id="btn-clear" class="btn btn-ghost" disabled>
+            Clear loaded data
+          </button>
+        </div>
+      </div>
+      <ul id="import-log" class="import-log" aria-live="polite"></ul>
+    </section>
+
+    <!-- ================= Overview ================= -->
+    <section class="card" aria-labelledby="overview-heading">
+      <h2 id="overview-heading">Overview</h2>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-label">Consultations</span>
+          <span class="stat-value" id="stat-count">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Total explored mL</span>
+          <span class="stat-value" id="stat-totalml">0.0 mL</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Avg mL / consult</span>
+          <span class="stat-value" id="stat-avgml">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Capture rate</span>
+          <span class="stat-value" id="stat-capture">--</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Date range</span>
+          <span class="stat-value stat-value-sm" id="stat-daterange">--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Charts ================= -->
+    <section class="card" aria-labelledby="charts-heading">
+      <h2 id="charts-heading">Trends</h2>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <h3>Consultations per week</h3>
+          <div class="chart-scroll"><canvas id="chart-weekly" role="img" aria-label="Bar chart of consultations per week"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>Zone popularity (total mL)</h3>
+          <canvas id="chart-zones" role="img" aria-label="Horizontal bar chart of total mL explored per zone"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Aesthetic style split</h3>
+          <canvas id="chart-aesthetic" role="img" aria-label="Donut chart of feminine, balanced and masculine style split"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>Age-range distribution</h3>
+          <canvas id="chart-age" role="img" aria-label="Bar chart of consultations by age range"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Sessions table ================= -->
+    <section class="card" aria-labelledby="sessions-heading">
+      <div class="section-head-row">
+        <h2 id="sessions-heading">Sessions</h2>
+        <div class="table-controls">
+          <label class="search-label" for="session-search">Search by name</label>
+          <input type="search" id="session-search" placeholder="Type a name…" autocomplete="off" />
+          <span id="session-count-label" class="muted-text small"></span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="session-table">
+          <thead>
+            <tr>
+              <th data-sort="at" tabindex="0" role="button" aria-label="Sort by date">Date</th>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Goal</th>
+              <th>Zones</th>
+              <th data-sort="totalMl" tabindex="0" role="button" class="num" aria-label="Sort by total mL">Total mL</th>
+              <th>Photos</th>
+            </tr>
+          </thead>
+          <tbody id="session-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= Fitted-params viewer ================= -->
+    <section class="card" aria-labelledby="params-heading">
+      <h2 id="params-heading">Fitted-params viewer</h2>
+      <p class="muted-text">
+        Drop an engine-params JSON exported from the dataset tool's
+        "Download engine params" button (Zone dose-response fit panel) to
+        see per-zone k / p / n / RMSE with a plain-language read on what
+        each number means for calibration.
+      </p>
+
+      <div id="dropzone-params" class="dropzone dropzone-compact" role="button" tabindex="0"
+           aria-label="Drop an engine-params JSON file here, or press Enter to choose a file">
+        <p class="dropzone-title">Drop engine-params JSON here</p>
+        <p class="muted-text small">or click / press Enter to choose a file</p>
+      </div>
+      <input type="file" id="file-input-params" accept="application/json,.json" hidden />
+
+      <p id="params-summary" class="import-summary" role="status" aria-live="polite"></p>
+      <div class="table-wrap">
+        <table id="params-table">
+          <thead>
+            <tr>
+              <th>Zone</th>
+              <th>Mode</th>
+              <th>k</th>
+              <th>p</th>
+              <th>n</th>
+              <th>RMSE</th>
+              <th>Interpretation</th>
+            </tr>
+          </thead>
+          <tbody id="params-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="dash-footer">
+    <div class="container">
+      <div class="privacy-box">
+        <p>
+          Everything on this page runs locally in your browser. Dropped
+          files are parsed on-device and are never uploaded, synced, or sent
+          anywhere — there is no server, no network call, and no analytics.
+          Closing this tab clears everything; nothing is written to disk
+          except the files you explicitly export.
+        </p>
+      </div>
+      <p class="muted-text small">
+        Clinic Dashboard is a standalone tool for Filler Mirror consultation
+        exports — see <code>dashboard/README.md</code> for setup.
+      </p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
