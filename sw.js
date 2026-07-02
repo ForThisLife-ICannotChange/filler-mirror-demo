@@ -1,7 +1,7 @@
 // Offline support: cache-first with background refresh for same-origin GETs.
 // After the first visit, the app shell, WASM runtime, and face model are all
 // cached — the clinic iPad keeps working with no internet.
-const CACHE = 'filler-mirror-v2'
+const CACHE = 'filler-mirror-rollback-v2r1'
 
 self.addEventListener('install', () => {
   self.skipWaiting()
