@@ -1,0 +1,646 @@
+/* ==========================================================================
+   Clinic Dashboard — pure static CSS. No build step, no external fonts or
+   CDNs. Dark theme matching the rest of the product (see ../site/styles.css
+   for the same palette on the marketing site).
+   ========================================================================== */
+
+:root {
+  /* -- palette (matches ../site/styles.css) -- */
+  --bg: #0b0d10;
+  --bg-elevated: #12161b;
+  --bg-card: #14181d;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text: #f4f7f7;
+  --text-muted: #a7b1b6;
+  --text-faint: #77828a;
+  --accent: #50e3c2;
+  --accent-dim: #3ab89d;
+  --accent-soft: rgba(80, 227, 194, 0.12);
+  --accent-soft-strong: rgba(80, 227, 194, 0.22);
+  --accent-contrast: #06201a;
+
+  /* -- dashboard-only semantic colors -- */
+  --warn: #e0a15c;
+  --warn-soft: rgba(224, 161, 92, 0.14);
+  --danger: #ef6461;
+  --danger-soft: rgba(239, 100, 97, 0.14);
+
+  /* -- type -- */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* -- shape / spacing -- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --container: 1180px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 1rem;
+  top: -3rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.container {
+  width: min(var(--container), 94%);
+  margin-inline: auto;
+}
+
+.muted-text {
+  color: var(--text-muted);
+  font-size: 0.94rem;
+}
+
+.muted-text.small,
+.small {
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Header / footer                                                        */
+/* ---------------------------------------------------------------------- */
+
+.dash-header {
+  border-block-end: 1px solid var(--border);
+  padding-block: 1.5rem;
+}
+
+.dash-header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.25rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.dash-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.dash-footer {
+  padding-block: 2.5rem 3rem;
+  margin-block-start: 1rem;
+}
+
+.privacy-box {
+  padding: 1.1rem 1.4rem;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-soft-strong);
+  border-radius: var(--radius-md);
+  margin-block-end: 1rem;
+}
+
+.privacy-box p {
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Cards / sections                                                        */
+/* ---------------------------------------------------------------------- */
+
+main {
+  padding-block: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+.card h2 {
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  margin-block-end: 0.5rem;
+}
+
+.card > .muted-text {
+  max-width: 68ch;
+  margin-block-end: 1.1rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Dropzone                                                                */
+/* ---------------------------------------------------------------------- */
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  text-align: center;
+  padding: 2rem 1.25rem;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.dropzone-compact {
+  padding: 1.25rem;
+}
+
+.dropzone:hover,
+.dropzone:focus-visible {
+  border-color: var(--accent);
+}
+
+.dropzone.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.dropzone-icon {
+  width: 26px;
+  height: 26px;
+  color: var(--accent);
+  margin-block-end: 0.35rem;
+}
+
+.dropzone-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Buttons                                                                 */
+/* ---------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding-inline: 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+  transform: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-faint);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  color: var(--danger);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Import summary / log                                                   */
+/* ---------------------------------------------------------------------- */
+
+.import-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-block-start: 1.1rem;
+}
+
+.import-summary {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  min-height: 1.3em;
+}
+
+.import-summary.is-error {
+  color: var(--danger);
+}
+
+.import-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.import-log {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.log-entry {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border-inline-start: 3px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+}
+
+.log-entry.log-ok {
+  border-inline-start-color: var(--accent);
+}
+
+.log-entry.log-warn {
+  border-inline-start-color: var(--warn);
+  background: var(--warn-soft);
+  color: var(--text);
+}
+
+.log-entry.log-error {
+  border-inline-start-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Overview stat cards                                                    */
+/* ---------------------------------------------------------------------- */
+
+.stat-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.stat-label {
+  color: var(--text-faint);
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-value-sm {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Charts                                                                  */
+/* ---------------------------------------------------------------------- */
+
+.chart-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 760px) {
+  .chart-grid {
+    /* minmax(0, 1fr), not bare 1fr: a plain 1fr track has an implicit
+       min-width driven by its content's intrinsic size, and a <canvas>'s
+       `width` attribute (which app.js sets to a real pixel count) counts
+       as intrinsic size for that purpose. Without the explicit 0 floor,
+       resizing a canvas can feed back into the column's own width on the
+       next layout pass, so canvas.parentElement.clientWidth (read at the
+       start of the next chart's draw call) drifts between renders instead
+       of settling — the actual bug seen when a chart's last category
+       rendered outside the card's padding. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.chart-card {
+  min-width: 0;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem 1.25rem;
+}
+
+.chart-card h3 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-block-end: 0.75rem;
+}
+
+.chart-card canvas {
+  display: block;
+  width: 100%;
+}
+
+.chart-scroll {
+  overflow-x: auto;
+  padding-block-end: 4px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Tables                                                                  */
+/* ---------------------------------------------------------------------- */
+
+.section-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-block-end: 1rem;
+}
+
+.section-head-row h2 {
+  margin-block-end: 0;
+}
+
+.table-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.search-label {
+  color: var(--text-faint);
+  font-size: 0.82rem;
+}
+
+#session-search {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  min-width: 180px;
+}
+
+#session-search:focus-visible {
+  border-color: var(--accent);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-elevated);
+  color: var(--text-faint);
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.7rem 0.9rem;
+  border-block-end: 1px solid var(--border);
+}
+
+tbody td {
+  padding: 0.6rem 0.9rem;
+  border-block-end: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+
+tbody tr:last-child td {
+  border-block-end: none;
+}
+
+tbody tr:hover td {
+  background: var(--accent-soft);
+}
+
+th.num,
+td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+thead th[data-sort] {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-inline-end: 1.3rem;
+}
+
+thead th[data-sort]::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 0.4rem;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-inline: 4px solid transparent;
+  transform: translateY(-50%);
+  opacity: 0.4;
+}
+
+thead th[data-sort]:not(.sorted-asc):not(.sorted-desc)::after {
+  border-block-start: 5px solid var(--text-faint);
+}
+
+thead th[data-sort].sorted-asc::after {
+  border-block-end: 5px solid var(--accent);
+  opacity: 1;
+}
+
+thead th[data-sort].sorted-desc::after {
+  border-block-start: 5px solid var(--accent);
+  opacity: 1;
+}
+
+.empty-row {
+  text-align: center !important;
+  color: var(--text-faint);
+  padding: 2rem 1rem !important;
+  font-style: italic;
+  white-space: normal;
+}
+
+.photo-cell {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+}
+
+.interp-cell {
+  white-space: normal;
+  min-width: 320px;
+  max-width: 480px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Responsive tweaks                                                      */
+/* ---------------------------------------------------------------------- */
+
+@media (max-width: 520px) {
+  .import-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .import-actions {
+    flex-direction: column;
+  }
+
+  .table-controls {
+    width: 100%;
+  }
+
+  #session-search {
+    flex: 1;
+  }
+}
